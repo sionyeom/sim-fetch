@@ -1,0 +1,79 @@
+# Node.js 관련
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# TypeScript 관련
+dist/
+out/
+build/
+*.tsbuildinfo
+
+# 환경설정 파일
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# MacOS 관련
+.DS_Store
+
+# Windows 관련
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# IDE 및 편집기 관련
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# 테스트 관련
+coverage/
+.nyc_output/
+
+# 빌드 도구
+.eslintcache
+.parcel-cache
+.next/
+.nuxt/
+.svelte-kit/
+
+# 기타
+*.log
+*.lock
+*.tlog
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+__pycache__/
+*.class
+*.war
+*.jar
+*.svd
+*.swo
+*.swp
+
+# Git hooks
+.husky/
+
+# 프로젝트 특정 무시 파일 (예: 임시 파일, 실행 파일 등)
+tmp/
+temp/
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*.old
+*.orig
