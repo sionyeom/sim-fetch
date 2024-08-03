@@ -1,9 +1,7 @@
-interface ResponseHandlers<T> {
-  onSuccess: (data: T) => void;
-  onError: (error: Error) => void;
-}
+import { ResponseHandlers } from '../interfaces/ResponseHandlers';
+import { createHeaders } from '../services/headers';
 
-export class SimpleFetch {
+export class SimFetch {
   static async get<T>(
     url: string,
     handlers: ResponseHandlers<T>,
@@ -24,9 +22,7 @@ export class SimpleFetch {
     try {
       const response = await fetch(url, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: createHeaders({}),
         body: JSON.stringify(body),
       });
       this.handleResponse<T>(response, handlers);
@@ -43,9 +39,7 @@ export class SimpleFetch {
     try {
       const response = await fetch(url, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: createHeaders({}),
         body: JSON.stringify(body),
       });
       this.handleResponse<T>(response, handlers);
@@ -61,9 +55,7 @@ export class SimpleFetch {
     try {
       const response = await fetch(url, {
         method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: createHeaders({}),
       });
       this.handleResponse<T>(response, handlers);
     } catch (error) {
