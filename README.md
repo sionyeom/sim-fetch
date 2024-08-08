@@ -55,138 +55,180 @@ SimFetch.removeDefaultHeader('Authorization');
 
 특정 헤더를 추가한 요청을 설정할 수 있습니다.
 
-```jsx
-(async () => {
-  try {
-    // 커스텀 헤더를 포함한 GET 요청
-    const customHeaders = {
-      'Authorization': 'Bearer your-token',
-      'X-Custom-Header': 'custom-value'
-    };
+```tsx
+try {
+  // 커스텀 헤더를 포함한 GET 요청
+  const customHeaders = {
+    Authorization: 'Bearer your-token',
+    'X-Custom-Header': 'custom-value',
+  };
 
-    const response = await SimFetch.get<any>(
-      "https://api.sampleapis.com/wines/reds",
-      customHeaders
-    );
+  const response = await SimFetch.get<any>(
+    'https://api.sampleapis.com/wines/reds',
+    customHeaders,
+  );
 
-    console.log("Response Data:", response);
-  } catch (error) {
-    console.error("Request Failed:", error);
+  const { status, data } = response;
+
+  if (status === 200) {
+    return data;
   }
-})();
+} catch (error) {
+  if (error instanceof SimFetchError) {
+    const { status, message } = error;
+    ...
+  }
+}
 ```
 
-### 요청 만들기
+## 요청 만들기
 
-### GET 요청
-
+### GET 요청 : URL 통한 요청
 ```tsx
-import { SimFetch } from './core/simFetch';
-
 interface ApiResponse {
-  id: number;
+  id: string;
   name: string;
   description?: string;
 }
 
-(async () => {
-  try {
-    const response = await SimFetch.get<ApiResponse>('https://api.example.com');
-    const {status, data} = response
+try {
+  const response = await SimFetch.get<ApiResponse>('https://api.example.com');
+  const { status, data } = response;
 
-    if(status === 200) {
-      return data;
-    }
-
-  } catch (error) {
-    console.error('요청 실패:', error);
+  if (status === 200) {
+    return data;
   }
-})();
+} catch (error) {
+  if (error instanceof SimFetchError) {
+    const { status, message } = error;
+    ...
+  }
+}
+```
+
+### GET 요청 : Query Params 활용 요청
+```tsx
+interface ApiResponse {
+  id: string;
+  name: string;
+  description?: string;
+}
+
+try {
+  const response = await SimFetch.get<Item>('https://example.com/items', {
+    params: { id: '1' },
+  });
+  const { status, data } = response;
+
+  if (status === 200) {
+    return data;
+  }
+} catch (error) {
+  if (error instanceof SimFetchError) {
+    const { status, message } = error;
+    ...
+  }
+}
+```
+
+### GET 요청 : Params 활용 요청
+```tsx
+interface ApiResponse {
+  id: string;
+  name: string;
+  description?: string;
+}
+
+try {
+  const response = await SimFetch.get<ApiResponse>('https://api.example.com/1');
+  const { status, data } = response;
+
+  if (status === 200) {
+    return data;
+  }
+} catch (error) {
+  if (error instanceof SimFetchError) {
+    const {status, message} = error
+    ...
+  }
+}
 ```
 
 ### POST 요청
 
 ```tsx
-import { SimFetch } from './core/simFetch';
-
 interface ApiResponse {
-  id: number;
+  id: string;
   name: string;
   description?: string;
 }
 
-(async () => {
-  try {
-    const requestBody = { name: 'New Item', description: 'Item Description' };
-    const response = await SimFetch.post<ApiResponse>(
-      'https://api.example.com',
-      requestBody
-    );
-    
-    const {status, data} = response
+try {
+  const requestBody = { id: '1', name: 'New Item', description: 'Item Description' };
+  const response = await SimFetch.post<ApiResponse>(
+    'https://api.example.com',
+    requestBody,
+  );
 
-    if(status === 201) {
-      return data;
-    }
+  const { status, data } = response;
 
-} catch (error) {
-    console.error('요청 실패:', error);
+  if (status === 201) {
+    return data;
   }
-})();
+} catch (error) {
+  if (error instanceof SimFetchError) {
+    const {status, message} = error
+    ...
+  }
+}
 ```
 
 ### PATCH 요청
 
 ```tsx
-import { SimFetch } from './core/simFetch';
+try {
+  const requestBody = { name: 'Updated Item' };
+  const response = await SimFetch.patch(
+    'https://api.example.com/1',
+    requestBody,
+  );
 
-interface ApiResponse {
-  id: number;
-  name: string;
-  description?: string;
-}
+  const { status, data } = response;
 
-(async () => {
-  try {
-    const requestBody = { name: 'Updated Item' };
-    const response = await SimFetch.patch<ApiResponse>(
-      'https://api.example.com/1',
-      requestBody
-    );
-
-    const {status, data} = response
-
-    if(status === 200) {
-      return data;
-    }
-  } catch (error) {
-    console.error('요청 실패:', error);
+  if (status === 200) {
+    return data;
   }
-})();
+} catch (error) {
+  if (error instanceof SimFetchError) {
+    const { status, message } = error;
+    ...
+  }
+}
 ```
 
 ### DELETE 요청
 
 ```tsx
-import { SimFetch } from './core/simFetch';
-
 interface ApiResponse {
-  id: number;
+  id: string;
   name: string;
   description?: string;
 }
 
-(async () => {
-  try {
-    const response = await SimFetch.delete<ApiResponse>('https://api.example.com/1');
+try {
+  const response = await SimFetch.delete<ApiResponse>(
+    'https://api.example.com/1',
+  );
 
-    const {status, data} = response
+  const { status, data } = response;
 
-    if(status === 200) {
-      return data;
-    }
-  } catch (error) {
-    console.error('요청 실패:', error);
+  if (status === 200) {
+    return data;
   }
-})();
+} catch (error) {
+  if (error instanceof SimFetchError) {
+    const { status, message } = error;
+    ...
+  }
+}
 ```
