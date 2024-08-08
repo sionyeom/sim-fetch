@@ -1,3 +1,5 @@
+import SimFetchError from '../interfaces/SimFetchError';
+
 /**
  * @desc HTTP 메서드 타입 정의
  * @typedef {'GET' | 'POST' | 'PATCH' | 'DELETE'} HTTPMethod
@@ -22,7 +24,7 @@ const requests: RequestMap = {};
  * @param {HTTPMethod} method HTTP 메서드 (GET, POST, PATCH, DELETE)
  * @param {any} [body] 요청 본문 (POST, PATCH 요청 시 사용)
  * @param {HeadersInit} [customHeaders] 사용자 정의 헤더
- * @returns {Promise<T>} 응답 데이터
+ * @returns {Promise<{ data: T; status: number }>} 응답 데이터와 상태 코드
  * @throws {Error} 요청 중복 시 에러 발생
  */
 export const coreFetch = async <T>(
@@ -30,7 +32,8 @@ export const coreFetch = async <T>(
   method: HTTPMethod,
   body?: any,
   customHeaders?: HeadersInit,
-): Promise<T> => {
+): Promise<{ data: T; status: number }> => {
+  // Updated return type
   if (isRequestInProgress(url)) {
     throw new Error(`Request to ${url} is already in progress`);
   }
@@ -61,20 +64,26 @@ export const coreFetch = async <T>(
  * @template T
  * @param {string} url 요청한 URL
  * @param {Response} response fetch API 응답 객체
- * @returns {Promise<T>} 응답 데이터
+ * @returns {Promise<{ data: T; status: number }>} 응답 데이터와 상태 코드
  * @throws {Error} 응답 상태가 OK가 아닌 경우 에러 발생
  */
 const handleResponse = async <T>(
   url: string,
   response: Response,
-): Promise<T> => {
+): Promise<{ data: T; status: number }> => {
   cleanupRequest(url);
 
+  const status = response.status;
+
+  // 응답이 OK가 아닌 경우, 에러를 반환
   if (!response.ok) {
-    throw new Error(`HTTP error! Status: ${response.status}`);
+    // 에러 메시지를 포함하여 예외를 던짐
+    throw new SimFetchError(status, `HTTP error! Status: ${status}`);
   }
 
-  return response.json() as Promise<T>;
+  const data = (await response.json()) as T;
+
+  return { data, status };
 };
 
 /**
@@ -88,7 +97,7 @@ const handleError = (url: string, error: Error): void => {
   if (error.name === 'AbortError') {
     console.log(`Request to ${url} was aborted`);
   } else {
-    console.error(error);
+    console.error(error.message);
   }
 };
 
