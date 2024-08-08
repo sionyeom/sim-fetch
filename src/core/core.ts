@@ -1,4 +1,4 @@
-import SimFetchError from '../interfaces/SimFetchError';
+import { SimFetchError } from '../interfaces/SimFetchError';
 
 /**
  * @desc HTTP 메서드 타입 정의
@@ -55,7 +55,7 @@ export const coreFetch = async <T>(
     return await handleResponse<T>(url, response);
   } catch (error) {
     handleError(url, error as Error);
-    throw error;
+    throw error as SimFetchError;
   }
 };
 

@@ -1,5 +1,5 @@
 import { SimFetch } from '../core/simFetch';
-import SimFetchError from '../interfaces/SimFetchError';
+import { SimFetchError } from '../interfaces/SimFetchError';
 import { items, Item } from './mocks/handlers/handler';
 import { server } from './mocks/setup';
 

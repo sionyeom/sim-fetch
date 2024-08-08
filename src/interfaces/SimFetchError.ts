@@ -1,4 +1,4 @@
-export default class SimFetchError extends Error {
+export class SimFetchError extends Error {
   public status: number;
 
   constructor(status: number, message: string) {
