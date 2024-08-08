@@ -92,7 +92,12 @@ interface ApiResponse {
 (async () => {
   try {
     const response = await SimFetch.get<ApiResponse>('https://api.example.com');
-    console.log('응답 데이터:', response);
+    const {status, data} = response
+
+    if(status === 200) {
+      return data;
+    }
+
   } catch (error) {
     console.error('요청 실패:', error);
   }
@@ -117,8 +122,14 @@ interface ApiResponse {
       'https://api.example.com',
       requestBody
     );
-    console.log('응답 데이터:', response);
-  } catch (error) {
+    
+    const {status, data} = response
+
+    if(status === 201) {
+      return data;
+    }
+
+} catch (error) {
     console.error('요청 실패:', error);
   }
 })();
@@ -142,7 +153,12 @@ interface ApiResponse {
       'https://api.example.com/1',
       requestBody
     );
-    console.log('응답 데이터:', response);
+
+    const {status, data} = response
+
+    if(status === 200) {
+      return data;
+    }
   } catch (error) {
     console.error('요청 실패:', error);
   }
@@ -163,7 +179,12 @@ interface ApiResponse {
 (async () => {
   try {
     const response = await SimFetch.delete<ApiResponse>('https://api.example.com/1');
-    console.log('응답 데이터:', response);
+
+    const {status, data} = response
+
+    if(status === 200) {
+      return data;
+    }
   } catch (error) {
     console.error('요청 실패:', error);
   }
