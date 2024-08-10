@@ -16,30 +16,34 @@ describe('SimFetch', () => {
     server.close();
   });
 
-  it('should set default headers correctly', () => {
-    // given
-    const headers = { Authorization: 'Bearer token' };
-    // when
-    SimFetch.setDefaultHeaders(headers);
-    // then
-    expect(SimFetch['defaultHeaders']).toEqual(headers);
+  describe('setDefaultHeaders()', () => {
+    it('should set default headers as given headers', () => {
+      // given
+      const headers = { Authorization: 'Bearer token' };
+      // when
+      SimFetch.setDefaultHeaders(headers);
+      // then
+      expect(SimFetch['defaultHeaders']).toEqual(headers);
+    });
   });
 
-  it('should remove default header correctly', () => {
-    // given
-    const headers = {
-      Authorization: 'Bearer token',
-      Accept: 'application/json',
-    };
-    // when
-    SimFetch.setDefaultHeaders(headers);
-    SimFetch.removeDefaultHeader('Authorization');
-    const expectedHeaders = { Accept: 'application/json' };
-    // then
-    expect(SimFetch['defaultHeaders']).toEqual(expectedHeaders);
+  describe('removeDefaultHeader()', () => {
+    it('should remove the header element for the given key', () => {
+      // given
+      const headers = {
+        Authorization: 'Bearer token',
+        Accept: 'application/json',
+      };
+      // when
+      SimFetch.setDefaultHeaders(headers);
+      SimFetch.removeDefaultHeader('Authorization');
+      const expectedHeaders = { Accept: 'application/json' };
+      // then
+      expect(SimFetch['defaultHeaders']).toEqual(expectedHeaders);
+    });
   });
 
-  describe('should handle GET requests', () => {
+  describe('get()', () => {
     it('should get', async () => {
       // when
       const response = await SimFetch.get<Item>('https://example.com/items');
@@ -48,20 +52,23 @@ describe('SimFetch', () => {
       expect(data).toEqual(items);
     });
 
-    it('should get with query params', async () => {
+    it('should get with valid query params', async () => {
+      // given
+      const url = 'https://example.com/items';
+      const params = { id: '1' };
       // when
-      const response = await SimFetch.get<Item>('https://example.com/items', {
-        params: { id: '1' },
-      });
+      const response = await SimFetch.get<Item>(url, { params });
       const { status, data } = response;
       // then
       expect(status).toBe(200);
       expect(data).toEqual(items.filter((item) => item.id === '1'));
     });
 
-    it('should get with params', async () => {
+    it('should get with valid params', async () => {
+      // given
+      const url = 'https://example.com/items/1';
       // when
-      const response = await SimFetch.get<Item>('https://example.com/items/1');
+      const response = await SimFetch.get<Item>(url);
       const { status, data } = response;
       const item = items.find((item) => item.id === '1');
       // then
@@ -69,13 +76,14 @@ describe('SimFetch', () => {
       expect(data).toEqual(item);
     });
 
-    describe('should throw error with the correct response data and status code', () => {
-      it('should handle 404 Not Found errors correctly with query params', async () => {
+    describe('should throw', () => {
+      it('404 Not Found errors for missing or invalid query parameters.', async () => {
         try {
+          // given
+          const url = 'https://example.com/items';
+          const params = { id: '2' };
           // when
-          await SimFetch.get<Item>('https://example.com/items', {
-            params: { id: '2' },
-          });
+          await SimFetch.get<Item>(url, { params });
         } catch (err) {
           if (err instanceof SimFetchError) {
             // then
@@ -87,10 +95,12 @@ describe('SimFetch', () => {
         }
       });
 
-      it('should handle 404 Not Found errors correctly with params', async () => {
+      it('404 Not Found errors for missing or invalid params.', async () => {
         try {
+          // given
+          const url = 'https://example.com/items/2';
           // when
-          await SimFetch.get<Item>('https://example.com/items/2');
+          await SimFetch.get<Item>(url);
         } catch (err) {
           if (err instanceof SimFetchError) {
             // then
@@ -104,8 +114,8 @@ describe('SimFetch', () => {
     });
   });
 
-  describe('should handle POST requests', () => {
-    it('should post', async () => {
+  describe('post()', () => {
+    it('should post with valid body', async () => {
       // given
       const item = {
         id: '2',
@@ -124,8 +134,8 @@ describe('SimFetch', () => {
     });
   });
 
-  describe('should handle PATCH requests', () => {
-    it('should patch', async () => {
+  describe('patch()', () => {
+    it('should patch with valid body', async () => {
       // given
       const item = {
         id: '1',
@@ -144,8 +154,8 @@ describe('SimFetch', () => {
     });
   });
 
-  describe('should handle DELETE requests', () => {
-    it('should delete', async () => {
+  describe('delete()', () => {
+    it('should delete with valid params', async () => {
       // given
       const id = '1';
       // when
