@@ -16,6 +16,53 @@ describe('SimFetch', () => {
     server.close();
   });
 
+  describe('setUseAbortControllerDefault()', () => {
+    it('should set default useAbortController as given boolean value', () => {
+      // given
+      const useAbortController = false;
+      // when
+      SimFetch.setUseAbortControllerDefault(useAbortController);
+      // then
+      expect(SimFetch['useAbortControllerDefault']).toEqual(useAbortController);
+    });
+
+    describe('should throw', () => {
+      it('an error if a non-boolean value is passed to setUseAbortControllerDefault', () => {
+        expect(() => {
+          SimFetch.setUseAbortControllerDefault(
+            'invalid' as unknown as boolean,
+          );
+        }).toThrow(TypeError);
+
+        expect(() => {
+          SimFetch.setUseAbortControllerDefault(
+            'invalid' as unknown as boolean,
+          );
+        }).toThrow('Invalid value type: string. Expected boolean.');
+      });
+
+      it('an error if null is passed to setUseAbortControllerDefault', () => {
+        expect(() => {
+          SimFetch.setUseAbortControllerDefault(null as unknown as boolean);
+        }).toThrow(TypeError);
+
+        expect(() => {
+          SimFetch.setUseAbortControllerDefault(null as unknown as boolean);
+        }).toThrow('Invalid value type: object. Expected boolean.');
+      });
+
+      it('an error if a number is passed to setUseAbortControllerDefault', () => {
+        expect(() => {
+          SimFetch.setUseAbortControllerDefault(123 as unknown as boolean);
+        }).toThrow(TypeError);
+
+        expect(() => {
+          SimFetch.setUseAbortControllerDefault(123 as unknown as boolean);
+        }).toThrow('Invalid value type: number. Expected boolean.');
+      });
+    });
+  });
+
   describe('setDefaultHeaders()', () => {
     it('should set default headers as given headers', () => {
       // given
