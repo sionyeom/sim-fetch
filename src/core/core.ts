@@ -61,7 +61,7 @@ export const coreFetch = async <T>(
 };
 
 /**
- * @desc HTTP 응답을 처리하는 함수
+ * HTTP 응답을 처리하는 함수
  * @template T
  * @param url 요청한 URL
  * @param response fetch API 응답 객체
@@ -90,7 +90,7 @@ const handleResponse = async <T>(
 };
 
 /**
- * @desc 요청 처리 중 발생한 에러를 처리하는 함수
+ *요청 처리 중 발생한 에러를 처리하는 함수
  * @param url 요청한 URL
  * @param error 발생한 에러
  * @param useAbortController 해당 요청에 대해 AbortController를 사용할지 여부
@@ -112,14 +112,14 @@ const handleError = (
 };
 
 /**
- * @desc 특정 URL에 대한 요청이 진행 중인지 확인하는 함수
+ * 특정 URL에 대한 요청이 진행 중인지 확인하는 함수
  * @param url 요청할 URL
  * @returns {boolean} 요청 진행 여부
  */
 const isRequestInProgress = (url: string): boolean => !!requests[url];
 
 /**
- * @desc 새로운 AbortController를 생성하고 요청 추적에 추가하는 함수
+ * 새로운 AbortController를 생성하고 요청 추적에 추가하는 함수
  * @param url 요청할 URL
  * @returns {AbortController} 생성된 AbortController
  */
@@ -130,7 +130,7 @@ const createController = (url: string): AbortController => {
 };
 
 /**
- * @desc 요청 추적에서 특정 URL의 항목을 제거하는 함수
+ * 요청 추적에서 특정 URL의 항목을 제거하는 함수
  * @param url 요청할 URL
  */
 const cleanupRequest = (url: string): void => {
@@ -138,7 +138,7 @@ const cleanupRequest = (url: string): void => {
 };
 
 /**
- * @desc 기본 헤더와 사용자 정의 헤더를 결합하여 최종 헤더를 생성하는 함수
+ * 기본 헤더와 사용자 정의 헤더를 결합하여 최종 헤더를 생성하는 함수
  * @param customHeaders 사용자 정의 헤더
  * @returns {Headers} 결합된 헤더
  */
