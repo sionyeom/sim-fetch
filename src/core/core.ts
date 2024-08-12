@@ -1,13 +1,13 @@
 import { SimFetchError } from '../interfaces/SimFetchError';
 
 /**
- * @desc HTTP 메서드 타입 정의
+ * HTTP 메서드 타입 정의
  * @typedef {'GET' | 'POST' | 'PATCH' | 'DELETE'} HTTPMethod
  */
 type HTTPMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 
 /**
- * @desc 요청 중인 URL과 AbortController를 매핑하는 타입
+ * 요청 중인 URL과 AbortController를 매핑하는 타입
  * @typedef {Object.<string, AbortController>} RequestMap
  */
 type RequestMap = {
@@ -24,6 +24,7 @@ const requests: RequestMap = {};
  * @param method HTTP 메서드 (GET, POST, PATCH, DELETE)
  * @param body 요청 본문 (POST, PATCH 요청 시 사용)
  * @param customHeaders 사용자 정의 헤더
+ * @param useAbortController 해당 요청에 대해 AbortController를 사용할지 여부 (기본값: true)
  * @returns { data: T; status: number } 응답 데이터와 상태 코드
  * @throws {Error} 요청 중복 시 에러 발생
  */
@@ -32,13 +33,13 @@ export const coreFetch = async <T>(
   method: HTTPMethod,
   body?: any,
   customHeaders?: HeadersInit,
+  useAbortController: boolean = true, // 기본값 true
 ): Promise<{ data: T; status: number }> => {
-  // Updated return type
-  if (isRequestInProgress(url)) {
+  if (isRequestInProgress(url) && useAbortController) {
     throw new Error(`Request to ${url} is already in progress`);
   }
 
-  const controller = createController(url);
+  const controller = useAbortController ? createController(url) : undefined;
   const headers = createHeaders(customHeaders);
   const formattedBody =
     body && typeof body !== 'string' ? JSON.stringify(body) : body;
@@ -47,14 +48,14 @@ export const coreFetch = async <T>(
     method,
     body: formattedBody,
     headers,
-    signal: controller.signal,
+    signal: controller?.signal,
   };
 
   try {
     const response = await fetch(url, options);
-    return await handleResponse<T>(url, response);
+    return await handleResponse<T>(url, response, useAbortController);
   } catch (error) {
-    handleError(url, error as Error);
+    handleError(url, error as Error, useAbortController);
     throw error as SimFetchError;
   }
 };
@@ -64,20 +65,22 @@ export const coreFetch = async <T>(
  * @template T
  * @param url 요청한 URL
  * @param response fetch API 응답 객체
+ * @param useAbortController 해당 요청에 대해 AbortController를 사용할지 여부
  * @returns { data, status } 응답 데이터와 상태 코드
  * @throws {Error} 응답 상태가 OK가 아닌 경우 에러 발생
  */
 const handleResponse = async <T>(
   url: string,
   response: Response,
+  useAbortController: boolean,
 ): Promise<{ data: T; status: number }> => {
-  cleanupRequest(url);
+  if (useAbortController) {
+    cleanupRequest(url);
+  }
 
   const status = response.status;
 
-  // 응답이 OK가 아닌 경우, 에러를 반환
   if (!response.ok) {
-    // 에러 메시지를 포함하여 예외를 던짐
     throw new SimFetchError(status, `HTTP error! Status: ${status}`);
   }
 
@@ -90,9 +93,16 @@ const handleResponse = async <T>(
  * @desc 요청 처리 중 발생한 에러를 처리하는 함수
  * @param url 요청한 URL
  * @param error 발생한 에러
+ * @param useAbortController 해당 요청에 대해 AbortController를 사용할지 여부
  */
-const handleError = (url: string, error: Error): void => {
-  cleanupRequest(url);
+const handleError = (
+  url: string,
+  error: Error,
+  useAbortController: boolean,
+): void => {
+  if (useAbortController) {
+    cleanupRequest(url);
+  }
 
   if (error.name === 'AbortError') {
     console.log(`Request to ${url} was aborted`);
