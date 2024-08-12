@@ -11,13 +11,13 @@
 
 ## 설치
 
-`SimFetch`를 npm을 통해 설치할 수 있습니다:
+`SimFetch`를 npm을 통해 설치할 수 있습니다
 
 ```bash
 npm install sim-fetch
 ```
 
-또는 yarn을 통해 설치할 수 있습니다:
+또는 yarn을 통해 설치할 수 있습니다
 
 ```bash
 yarn add sim-fetch
@@ -26,15 +26,17 @@ yarn add sim-fetch
 
 ### 설정
 
-프로젝트에 `SimFetch`를 임포트합니다:
+프로젝트에 `SimFetch`를 임포트합니다
 
 ```tsx
 import { SimFetch } from 'sim-fetch';
 ```
 
+## 헤더 설정
+
 ### 기본 헤더 설정
 
-모든 요청에 대한 기본 헤더를 설정할 수 있습니다:
+모든 요청에 대한 기본 헤더를 설정하려면 `setDefaultHeaders` 메서드를 사용합니다.
 
 ```tsx
 SimFetch.setDefaultHeaders({
@@ -45,7 +47,7 @@ SimFetch.setDefaultHeaders({
 
 ### 기본 헤더 제거
 
-기본 헤더를 제거하려면 `removeDefaultHeader` 메서드를 사용합니다:
+기본 헤더를 제거하려면 `removeDefaultHeader` 메서드를 사용합니다.
 
 ```tsx
 SimFetch.removeDefaultHeader('Authorization');
@@ -80,6 +82,36 @@ try {
   }
 }
 ```
+
+## abortcontroller 설정
+
+### 기본값 설정
+abortcontroller 기본값을 설정하려면 `setUseAbortControllerDefault`메서드를 사용합니다.
+
+``` tsx
+SimFetch.setUseAbortControllerDefault(false); // default : true
+```
+
+### abortcontroller 커스텀 api 요청
+
+GET 요청은 파라미터에 key 값을 지정하여 설정할 수 있습니다.
+``` tsx
+try{
+  // GET
+  await SimFetch.get('https://example.com', { useAbortController: true})
+
+}
+```
+
+POST, PATCH, DELETE 요청은 4번째 파라미터에 boolean 값을 지정하여 설정할 수 있습니다.
+``` tsx
+try{
+  const requestBody = { key: 'value' };
+  await SimFetch.post('https://example.com', requestBody, undefined, false);    
+}
+```
+
+
 
 ## 요청 만들기
 
